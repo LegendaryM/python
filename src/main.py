@@ -6,3 +6,4 @@
 __author__ = 'miracle'
 
 print('test')
+print('公司test')

@@ -8,7 +8,7 @@
 @time: 2023/3/16 15:12
 """
 
-import cv2   # pip install opencv-contrib-python
+import cv2
 
 # img是matrix矩阵, 三维: 高、宽、数据(452. 867, 3)
 img = cv2.imread(r'./attachment/liu.jpg')

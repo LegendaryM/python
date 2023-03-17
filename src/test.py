@@ -10,5 +10,9 @@
 
 import numpy as np
 
-b = np.repeat([[1, 2]], 2, axis=0)
-print(b)
+# b = np.repeat([[1, 2]], 2, axis=0)
+# print(b)
+
+a = [1, 2, 3]
+for i, j in enumerate(a, start=10):
+    print(i, j)

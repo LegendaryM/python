@@ -23,7 +23,8 @@ while True:
     # 播放慢了，检测人脸耗时操作，扫描整张图片，图片大，耗时长
     faces = face_detector.detectMultiScale(gray)
     for x, y, w, h in faces:
-        frame[y:y+h, x:x+w] = cv2.resize(head, dsize=(w, h))
+        # frame[y:y+h, x:x+w] = cv2.resize(head, dsize=(w, h))
+        cv2.rectangle(frame, pt1=(x,y), pt2=(x+w,y+h), color=[0,0,255], thickness=2)
     cv2.imshow('frame', frame)
     key = cv2.waitKey(10)
     if key == ord('q'):

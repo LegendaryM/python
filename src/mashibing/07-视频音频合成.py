@@ -13,7 +13,7 @@ import subprocess
 
 # 尽量选择单声道音频, 将双声道转单声道 命令：ffmpeg -i sucai.wav -ac 1 sucai2.wav
 samplerate, wav = wavfile.read(r'./attachment/sucai2.wav')
-part = wav[10 * samplerate: 13 * samplerate]
+part = wav[10 * samplerate: 26 * samplerate]
 wavfile.write(r'./attachment/part.wav', samplerate, part)
 
 cmd = "ffmpeg -i ./attachment/gray.mp4 -i ./attachment/part.wav ./attachment/gray2.mp4"

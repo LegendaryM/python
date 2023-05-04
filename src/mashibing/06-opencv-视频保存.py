@@ -29,6 +29,7 @@ while True:
     gray = np.resize(gray, (int(h_//2), int(w_//2), 1))
     gray = np.repeat(gray, 3, axis=-1)
     cv2.imshow('frame', frame)
+    cv2.imwrite()
     writer.write(gray)
     key = cv2.waitKey(1000 // int(fps))
     if key == ord('q'):

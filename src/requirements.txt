@@ -1,0 +1,9 @@
+opencv-contrib-python
+scipy
+scikit-image
+matplotlib
+
+# 音频处理
+soundfile
+librosa
+

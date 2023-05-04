@@ -1,4 +1,0 @@
-pip install opencv-contrib-python
-pip install scipy
-pip install scikit-image
-pip install matplotlib

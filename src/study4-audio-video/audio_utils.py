@@ -15,14 +15,25 @@ from sklearn import preprocessing
 import matplotlib.pyplot as plt
 import soundfile as sf
 
-
-
+"""
+    参考： https://www.jianshu.com/p/8d6ffe6e10b9
+    sr：采样率
+    hop_length：帧移
+    overlapping：连续帧之间的重叠部分
+    n_fft：窗口大小
+    spectrum：频谱
+    spectrogram：频谱图或叫做语谱图
+    amplitude：振幅
+    mono：单声道、stereo：立体声
+"""
 class AudioUtils(object):
     def __init__(self, audio_file):
         self.audio_file = audio_file
         self.audio_sf = sf.SoundFile(self.audio_file)
         self.sr = self.audio_sf.samplerate
-        self.frame_data, _ = librosa.load(self.audio_sf)
+        self.mono = self.audio_sf.channels == 1
+        self.duration = self.audio_sf.frames / self.sr
+        self.frame_data, _ = librosa.load(self.audio_sf, sr=self.sr, mono=self.mono)
 
     def get_audio_info(self):
         """
@@ -30,10 +41,29 @@ class AudioUtils(object):
         :param audio_file:
         :return:
         """
-        audio_info = {'sr': self.audio_sf.samplerate, 'channel': self.audio_sf.channels, 'frame': self.audio_sf.frames,
+        audio_info = {'sr': self.audio_sf.samplerate, 'channel': ('mono' if self.mono else 'stereo'),
+                      'frame(num of samples)': self.audio_sf.frames,
                       'subtype': self.audio_sf.subtype,
-                      'duration': f'{self.audio_sf.frames / self.audio_sf.samplerate:.3f} s'}
+                      'duration': f'{self.duration:.3f} s'}
         return audio_info
+
+    def get_audio_clip(self, start_sec, end_sec, output_file=None):
+        """
+        获取音频片段
+        :param start_sec: 秒
+        :param end_sec: 秒
+        :param output_file:
+        :return:
+        """
+        if end_sec >= self.duration:
+            audio_clip = self.frame_data
+        else:
+            audio_clip = self.frame_data[..., start_sec*self.sr: end_sec*self.sr]
+
+        if output_file:
+            sf.write(output_file, audio_clip.T, self.sr, format='wav')
+        else:
+            return audio_clip
 
     def make_wave_diagram(self):
         """
@@ -141,6 +171,10 @@ class AudioUtils(object):
         librosa.display.specshow(chromagram, x_axis='time', y_axis='chroma', hop_length=512, cmap='coolwarm')
         plt.show()
 
+
 if __name__ == '__main__':
-    au = AudioUtils(r'C:\Users\Administrator\Desktop\temp\test.wav')
-    print(au.make_chroma_feature())
+    au = AudioUtils(r'D:\tmp\va\ttnk_clip.wav')
+    # au = AudioUtils(r'D:\tmp\va\ttnk.wav')
+    print(au.get_audio_info())
+    # print(au2.make_wave_diagram())
+    print(au.get_audio_clip(10,30,r'D:\tmp\va\ttnk_clip_2.wav'))

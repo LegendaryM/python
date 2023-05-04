@@ -18,6 +18,10 @@ class VideoUtils(object):
         self.video_file = video_file
 
     def get_video_info(self):
+        """
+        获取视频信息： by cv2
+        :return:
+        """
         cap = cv2.VideoCapture(self.video_file)
         if not cap.isOpened():
             return 0
@@ -29,10 +33,19 @@ class VideoUtils(object):
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))  # 总图像帧数
         duration = total_frames / fps
         message_vedio = {'m_size': f"{fileSize:.4f} Mib", 'fps': fps, 'w': width, 'h': height,
-                         'framecount': total_frames, 'duration': duration}
+                         'framecount': total_frames, 'duration': f'{duration:.3f}s'}
         return message_vedio
+
+    def split_audio(self, audio_output_file):
+        """
+        提取视频中的音频: by moviepy
+        :param audio_output_file:
+        :return:
+        """
+        from moviepy.editor import AudioFileClip
+        AudioFileClip(self.video_file).write_audiofile(audio_output_file)
 
 
 if __name__ == '__main__':
-    vu = VideoUtils(r'C:\Users\Administrator\Desktop\temp\test.mp4')
-    print(vu.get_video_info())
+    vu = VideoUtils(r'D:\tmp\va\ttnk.mp4')
+    print(vu.split_audio(r'D:\tmp\va\ttnk.wav'))

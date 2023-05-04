@@ -4,6 +4,6 @@ scikit-image
 matplotlib
 
 # 音频处理
-soundfile
 librosa
+moviepy
 

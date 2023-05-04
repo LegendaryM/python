@@ -9,13 +9,15 @@
 @time: 2023/5/4 16:58
 """
 
-import librosa
+import librosa  # 只会导入librosa.__init__.py信息，而不会导入下级文件中的信息，使用子目录时，需要手动导入子目录，例如librosa.feature
+import librosa.feature
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 import soundfile as sf
 
 
-class Audio_Utios(object):
+
+class AudioUtils(object):
     def __init__(self, audio_file):
         self.audio_file = audio_file
         self.audio_sf = sf.SoundFile(self.audio_file)
@@ -140,5 +142,5 @@ class Audio_Utios(object):
         plt.show()
 
 if __name__ == '__main__':
-    au = Audio_Utios(r'C:\Users\Administrator\Desktop\temp\test.wav')
+    au = AudioUtils(r'C:\Users\Administrator\Desktop\temp\test.wav')
     print(au.make_chroma_feature())

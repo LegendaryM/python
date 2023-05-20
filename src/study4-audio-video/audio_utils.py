@@ -171,6 +171,9 @@ class AudioUtils(object):
         librosa.display.specshow(chromagram, x_axis='time', y_axis='chroma', hop_length=512, cmap='coolwarm')
         plt.show()
 
+    def close(self):
+        self.audio_sf.close()
+
 
 if __name__ == '__main__':
     au = AudioUtils(r'D:\tmp\va\ttnk_clip.wav')

@@ -43,6 +43,7 @@ class AudioUtils(object):
         """
         audio_info = {'sr': self.audio_sf.samplerate, 'channel': ('mono' if self.mono else 'stereo'),
                       'frame(num of samples)': self.audio_sf.frames,
+                      'shape of frame_data': self.frame_data.shape,
                       'subtype': self.audio_sf.subtype,
                       'duration': f'{self.duration:.3f} s'}
         return audio_info
@@ -176,8 +177,8 @@ class AudioUtils(object):
 
 
 if __name__ == '__main__':
-    au = AudioUtils(r'D:\tmp\va\ttnk_clip.wav')
+    au = AudioUtils(r'D:\tmp\va\ttnk.wav')
     # au = AudioUtils(r'D:\tmp\va\ttnk.wav')
     print(au.get_audio_info())
     # print(au2.make_wave_diagram())
-    print(au.get_audio_clip(10,30,r'D:\tmp\va\ttnk_clip_2.wav'))
+    # print(au.get_audio_clip(10,30,r'D:\tmp\va\ttnk_clip_2.wav'))

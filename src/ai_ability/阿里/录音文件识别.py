@@ -12,6 +12,9 @@ from aliyunsdkcore.acs_exception.exceptions import ClientException
 from aliyunsdkcore.acs_exception.exceptions import ServerException
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
+from ai_ability.config import *
+
+
 def fileTrans(akId, akSecret, appKey, fileLink) :
     # 地域ID，固定值。
     REGION_ID = "cn-shanghai"
@@ -36,6 +39,7 @@ def fileTrans(akId, akSecret, appKey, fileLink) :
     STATUS_SUCCESS = "SUCCESS"
     STATUS_RUNNING = "RUNNING"
     STATUS_QUEUEING = "QUEUEING"
+    ENABLE_SAMPLE_RATE_ADAPTIVE = "enable_sample_rate_adaptive"
     # 创建AcsClient实例
     client = AcsClient(akId, akSecret, REGION_ID)
     # 提交录音文件识别请求
@@ -47,7 +51,7 @@ def fileTrans(akId, akSecret, appKey, fileLink) :
     postRequest.set_method('POST')
     # 新接入请使用4.0版本，已接入（默认2.0）如需维持现状，请注释掉该参数设置。
     # 设置是否输出词信息，默认为false，开启时需要设置version为4.0。
-    task = {KEY_APP_KEY : appKey, KEY_FILE_LINK : fileLink, KEY_VERSION : "4.0", KEY_ENABLE_WORDS : False}
+    task = {KEY_APP_KEY : appKey, KEY_FILE_LINK : fileLink, KEY_VERSION : "4.0", KEY_ENABLE_WORDS : False, ENABLE_SAMPLE_RATE_ADAPTIVE: True}
     # 开启智能分轨，如果开启智能分轨，task中设置KEY_AUTO_SPLIT为True。
     # task = {KEY_APP_KEY : appKey, KEY_FILE_LINK : fileLink, KEY_VERSION : "4.0", KEY_ENABLE_WORDS : False, KEY_AUTO_SPLIT : True}
     task = json.dumps(task)
@@ -102,9 +106,12 @@ def fileTrans(akId, akSecret, appKey, fileLink) :
     else :
         print ("录音文件识别失败！")
     return
-accessKeyId = ""
-accessKeySecret = "0uTgTx5MSZdo6hoEvzfsSDpJ7wl2hO"
-appKey = "9020La4PKNJed5Nw"
-fileLink = "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
-# 执行录音文件识别
-fileTrans(accessKeyId, accessKeySecret, appKey, fileLink)
+
+
+if __name__ == '__main__':
+    accessKeyId = ali_aki
+    accessKeySecret = ali_aks
+    appKey = ali_ak
+    fileLink = "https://digital-public.obs.cn-east-3.myhuaweicloud.com/vpp/test/aisiji_01.wav"
+    # 执行录音文件识别
+    fileTrans(accessKeyId, accessKeySecret, appKey, fileLink)

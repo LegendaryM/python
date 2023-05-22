@@ -7,13 +7,9 @@ import numpy as np
 # import
 
 
-x = np.array([-2,2])
-w = np.array([1,2])
-b = np.array([1,2])
-z = w.T * x + b
-print(np.where(z > 0, z, 0))
-
-
+a = [1,2,3]
+for i in zip(a, range(len(a))):
+    print(i)
 
 
 

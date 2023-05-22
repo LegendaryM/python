@@ -31,7 +31,7 @@ from urllib.parse import urlparse
 import time
 import websockets
 
-appid = "8948505691"    # 项目的 appid
+appid = ""    # 项目的 appid
 token = "VGodbQ-4kZ5P5O_aVo9irerLxMRGDZfD"    # 项目的 token
 cluster = "volcengine_input_common"  # 请求的集群
 audio_path = r"C:\Users\miracle_j\Downloads\aisiji_01.wav"  # 本地音频路径

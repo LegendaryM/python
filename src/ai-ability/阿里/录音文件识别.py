@@ -102,7 +102,7 @@ def fileTrans(akId, akSecret, appKey, fileLink) :
     else :
         print ("录音文件识别失败！")
     return
-accessKeyId = "LTAI5tCzi1thzZqq1Hof8HcZ"
+accessKeyId = ""
 accessKeySecret = "0uTgTx5MSZdo6hoEvzfsSDpJ7wl2hO"
 appKey = "9020La4PKNJed5Nw"
 fileLink = "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"

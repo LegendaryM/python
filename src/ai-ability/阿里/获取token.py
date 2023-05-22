@@ -15,7 +15,7 @@ from aliyunsdkcore.request import CommonRequest
 
 # 创建AcsClient实例
 client = AcsClient(
-   "LTAI5tCzi1thzZqq1Hof8HcZ",
+   "",
    "0uTgTx5MSZdo6hoEvzfsSDpJ7wl2hO",
    "cn-shanghai"
 );

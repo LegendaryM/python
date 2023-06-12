@@ -94,7 +94,14 @@ def fileTrans(akId, akSecret, appKey, fileLink) :
             if statusText == STATUS_RUNNING or statusText == STATUS_QUEUEING :
                 # 继续轮询
                 time.sleep(10)
-            else :
+            elif statusText == STATUS_SUCCESS :
+                sentences = getResponse['Result']['Sentences']
+                full_str = ''
+                for sentence in sentences:
+                    full_str += sentence['Text']
+                print('========>', full_str)
+                break
+            else:
                 # 退出轮询
                 break
         except ServerException as e:
@@ -112,6 +119,6 @@ if __name__ == '__main__':
     accessKeyId = ali_aki
     accessKeySecret = ali_aks
     appKey = ali_ak
-    fileLink = "https://digital-public.obs.cn-east-3.myhuaweicloud.com/vpp/test/aisiji_01.wav"
+    fileLink = "https://digital-public.obs.cn-east-3.myhuaweicloud.com/vpp/temp/6%E6%9C%888%E6%97%A5.wav"
     # 执行录音文件识别
     fileTrans(accessKeyId, accessKeySecret, appKey, fileLink)

@@ -34,7 +34,7 @@ import websockets
 appid = ""    # 项目的 appid
 token = "VGodbQ-4kZ5P5O_aVo9irerLxMRGDZfD"    # 项目的 token
 cluster = "volcengine_input_common"  # 请求的集群
-audio_path = r"C:\Users\miracle_j\Downloads\aisiji_01.wav"  # 本地音频路径
+audio_path = r"C:\Users\Administrator\Videos\6月8日.wav"  # 本地音频路径
 audio_format = "wav"   # wav 或者 mp3，根据实际音频格式设置
 
 PROTOCOL_VERSION = 0b0001

@@ -39,6 +39,18 @@ def http_get_req(url, timeout=60, headers=None):
     """
     return requests.get(url, timeout=timeout, headers=headers).json()
 
+def http_get_req_origin(url, timeout=60, headers=None):
+    print('get req:', url)
+    """
+    http协议的post请求
+    :param params:
+    :param timeout:
+    :param url:
+    :param json_param: json参数
+    :return:
+    """
+    return requests.get(url, timeout=timeout, headers=headers)
+
 def get_current_time(show_type='ms'):
     """
     获取当前时间

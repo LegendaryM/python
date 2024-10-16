@@ -39,6 +39,18 @@ def http_get_req(url, timeout=60, headers=None):
     """
     return requests.get(url, timeout=timeout, headers=headers).json()
 
+def http_get_req_origin(url, timeout=60, headers=None):
+    print('get req:', url)
+    """
+    http协议的post请求
+    :param params:
+    :param timeout:
+    :param url:
+    :param json_param: json参数
+    :return:
+    """
+    return requests.get(url, timeout=timeout, headers=headers)
+
 def get_current_time(show_type='ms'):
     """
     获取当前时间
@@ -85,6 +97,28 @@ def download_file(url, local_file):
             f.write(chunk)
         f.flush()
     print(url, 'download success')
+
+
+def write_list(datas, file, mode='w'):
+    print("开始写入txt中...")
+    # 写文件
+    with open(file, mode) as f:
+        for data in datas:
+            f.write(data + '\n')
+        f.flush()
+    print("写入txt成功")
+
+
+def read_list(file, mode='r'):
+    # 写文件
+    with open(file, mode) as f:
+        datas = f.readlines()
+    print("读取txt成功")
+    # 去除换行
+    results = []
+    for data in datas:
+        results.append(data[:-1])
+    return results
 
 
 if __name__ == '__main__':

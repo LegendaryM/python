@@ -87,6 +87,28 @@ def download_file(url, local_file):
     print(url, 'download success')
 
 
+def write_list(datas, file, mode='w'):
+    print("开始写入txt中...")
+    # 写文件
+    with open(file, mode) as f:
+        for data in datas:
+            f.write(data + '\n')
+        f.flush()
+    print("写入txt成功")
+
+
+def read_list(file, mode='r'):
+    # 写文件
+    with open(file, mode) as f:
+        datas = f.readlines()
+    print("读取txt成功")
+    # 去除换行
+    results = []
+    for data in datas:
+        results.append(data[:-1])
+    return results
+
+
 if __name__ == '__main__':
     import random
     print(random.random)

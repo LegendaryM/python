@@ -20,24 +20,34 @@ nid: 600沪 -> 1.code
 
 
 from util.my_utils import http_get_req_origin
+from util.obs_client import upload_to_obs
+from gp.gp_code import all_codes
 import time
 import os
-
-all_codes = {
-    0: ['000550'],
-    1: ['600611']
-}
 
 data_url_base = 'https://webquotepic.eastmoney.com/GetPic.aspx'
 
 img_path = r'E:\temp\4'
 
 for tag, codes in all_codes.items():
-    for code in codes:
+    length = len(codes)
+    for i in range(length):
+        code = codes[i]
+        png_file = os.path.join(img_path, code + '.png')
+        if os.path.exists(png_file):
+            print("[%s %s/%s] %s exists, skip" % (tag, i+1, length, code))
+            continue
         resp = http_get_req_origin('%s?imageType=rc&type=&token=44c9d251add88e27b65ed86506f6e5da&nid=%s.%s&timespan=%d' % (data_url_base,tag,code, time.time()))
         if resp.status_code != 200:
-            print("%s get failed" % code)
-        png_file = os.path.join(img_path, code + '.png')
+            print("[%s %s/%s] %s get failed" % (tag, i+1, length, code))
+
         with open(png_file, 'wb') as f:
             f.write(resp.content)
-        print("%s get success: %s" % (code, png_file))
+        print("[%s %s/%s] %s get success: %s" % (tag, i+1, length, code, png_file))
+        # time.sleep(0.5)
+
+print('All download success, start upload to obs.')
+for f in os.listdir(img_path):
+    upload_to_obs(os.path.join(img_path, f), r'vpp/1batchSynth/test/k/' + f)
+# upload_to_obs(img_path, r'vpp/1batchSynth/test/k/')
+print('Upload to obs success.')

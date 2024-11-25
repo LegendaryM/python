@@ -67,9 +67,9 @@
         <img src="/images/<%= image.name %>" alt="<%= image.name %>">
         <div class="buttons">
           <label>当前选择状态：  '<%=image.status%>'</label>
-          <button class="red" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
+          <button class="green" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
           <button class="blue" onclick="setImageName('<%= image.name %>', '待定')">待定</button>
-          <button class="green" onclick="setImageName('<%= image.name %>', '上升')">上升</button>
+          <button class="red" onclick="setImageName('<%= image.name %>', '上升')">上升</button>
         </div>
       </div>
       

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <style>
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .image-item {
+        display: flex;
+        align-items: center;
+        margin: 80px;
+        width: 90%;
+        border: 2px solid #ccc; /* Add default border */
+        padding: 10px; /* Add some padding for better spacing */
+    }
+    .image-item img {
+        /* max-width: 200px; */
+        margin-right: 70px;
+        transform: scale(1.2);
+        /* box-sizing: border-box; */
+    }
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .buttons button {
+        margin: 5px 0;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    .red { background-color: red; color: white; }
+    .blue { background-color: blue; color: white; }
+    .green { background-color: green; color: white; }
+</style>
+  <script>
+    function setImageName(name, value) {
+      fetch('/select-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ imageName: name, value:value })
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log(data);
+        location.reload();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>Image Gallery</h1>
+  <div id="image-container">
+    <% images.forEach(function(image) { %>
+      <div class="image-item">
+        <img src="/images/<%= image.name %>" alt="<%= image.name %>">
+        <div class="buttons">
+          <label>当前选择状态：  '<%=image.status%>'</label>
+          <button class="red" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
+          <button class="blue" onclick="setImageName('<%= image.name %>', '待定')">待定</button>
+          <button class="green" onclick="setImageName('<%= image.name %>', '上升')">上升</button>
+        </div>
+      </div>
+      
+    <% }) %>
+  </div>
+</body>
+</html>

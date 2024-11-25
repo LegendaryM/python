@@ -16,5 +16,8 @@ def main(cmd):
     if cmd == 'clean':
         clean()
     else:
-        download_upload()
-        send()
+        download_upload(False)
+        # send()
+
+if __name__ == '__main__':
+    main('')

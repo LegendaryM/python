@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Content Table</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>File Content Table</h1>
+  <form id="searchForm">
+    <select id="searchSelect" name="searchTerm" style="width: 200px; background-color: lightblue; color: black;">
+      <option value="上升" <%= searchTerm === '上升' ? 'selected' : '' %>>上升</option>
+      <option value="待定" <%= searchTerm === '待定' ? 'selected' : '' %>>待定</option>
+      <option value="下降" <%= searchTerm === '下降' ? 'selected' : '' %>>下降</option>
+    </select>
+    <button type="submit">Search</button>
+  </form>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>File Name</th>
+        <th>Content</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% filesData.forEach(file => { %>
+        <tr>
+          <td><%= file.name %></td>
+          <td><%= file.content %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+        const searchSelect = document.getElementById('searchSelect');
+        const searchTerm = searchSelect.value;
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `searchTerm=${searchTerm}`
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.open();
+            document.write(data);
+            document.close();
+        });
+    });
+
+  </script>
+</body>
+</html>

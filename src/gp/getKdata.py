@@ -34,7 +34,7 @@ from util.obs_client import upload_to_obs
 
 k_url_base = 'https://webquoteklinepic.eastmoney.com/GetPic.aspx'
 
-img_path = r'E:\temp\4'
+img_path = r'E:\1gp\png'
 
 
 def download_upload(upload=False):

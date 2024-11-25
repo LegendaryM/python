@@ -37,6 +37,35 @@ app.get('/', (req, res) => {
   });
 });
 
+function readFilesFromDirectory() {
+  const filesData = [];
+  const files = fs.readdirSync(imagesDir).filter(file => path.extname(file) === '.txt');
+
+  files.forEach(file => {
+    const content = fs.readFileSync(path.join(imagesDir, file), 'utf8');
+    const fileNameWithoutExtension = path.basename(file, '.txt');
+    filesData.push({ name: fileNameWithoutExtension, content: content });
+  });
+
+  return filesData;
+}
+
+app.get('/t', (req, res) => {
+  const filesData = readFilesFromDirectory();
+  res.render('index1', { filesData, 'searchTerm':'' });
+});
+
+app.post('/search', (req, res) => {
+  const searchTerm = req.body.searchTerm;
+  const filesData = readFilesFromDirectory();
+  const filteredData = filesData.filter(file => file.content.includes(searchTerm) );
+  // const filteredData = filesData.map(file => ({
+  //   name: file.name,
+  //   content: file.content.includes(searchTerm) ? file.content : ''
+  // }));
+  res.render('index1', { filesData: filteredData, searchTerm });
+});
+
 app.post('/select-image', (req, res) => {
   const selectedImage = req.body.imageName;
   const value = req.body.value;

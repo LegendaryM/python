@@ -79,6 +79,23 @@ app.post('/select-image', (req, res) => {
 
 app.use('/images', express.static(imagesDir));
 
+const os = require('os');
+
+// 获取网络接口信息
+const networkInterfaces = os.networkInterfaces();
+
+// 遍历所有网络接口
+for (const interfaceName in networkInterfaces) {
+    const addresses = networkInterfaces[interfaceName];
+    for (const addressInfo of addresses) {
+        // 检查IPv4地址并且不是内部地址（例如127.0.0.1）
+        if (addressInfo.family === 'IPv4' && !addressInfo.internal) {
+            console.log(`IP Address: ${addressInfo.address}`);
+        }
+    }
+}
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

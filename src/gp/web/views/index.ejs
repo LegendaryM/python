@@ -47,14 +47,19 @@
         },
         body: JSON.stringify({ imageName: name, value:value })
       })
-      .then(response => response.text())
+      .then(response => {
+        response.text()
+        
+    })
       .then(data => {
-        console.log(data);
-        location.reload();
+        // console.log(data);
+        
       })
       .catch(error => {
         console.error('Error:', error);
       });
+
+      document.getElementsByClassName(name +'_label2')[0].textContent = value
     }
   </script>
 </head>
@@ -66,7 +71,7 @@
       <div class="image-item">
         <img src="/images/<%= image.name %>" alt="<%= image.name %>">
         <div class="buttons">
-          <label>当前选择状态：  '<%=image.status%>'</label>
+          <label class="label1">当前选择状态：  '<label class="<%=image.name%>_label2"><%=image.status%></label>'</label>
           <button class="green" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
           <button class="blue" onclick="setImageName('<%= image.name %>', '待定')">待定</button>
           <button class="red" onclick="setImageName('<%= image.name %>', '上升')">上升</button>

@@ -38,14 +38,21 @@ img_path = r'E:\1gp\png'
 
 
 def download_upload(upload=False):
+    for f in os.listdir(img_path):
+        if f.endswith('new.png'):
+            new_f = f.replace('_new','')
+            print('%s -> rename to: %s' % (f, new_f))
+            os.rename(os.path.join(img_path,f),os.path.join(img_path,new_f))
+
+
     for tag, codes in all_codes.items():
         length = len(codes)
         for i in range(length):
             code = codes[i]
-            png_file = os.path.join(img_path, code + '.png')
-            if os.path.exists(png_file):
-                print("[%s %s/%s] %s exists, skip" % (tag, i + 1, length, code))
-                continue
+            png_file = os.path.join(img_path, code + '_new.png')
+            if os.path.exists(os.path.join(img_path, code + '.png')):
+                os.remove(os.path.join(img_path, code + '.png'))
+                # continue
             resp = http_get_req_origin(
                 '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
                 k_url_base, tag, code, time.time()))
@@ -68,3 +75,6 @@ def clean():
         os.remove(os.path.join(img_path, f))
     print("%s clean success" % img_path)
 
+
+if __name__ == '__main__':
+    pass

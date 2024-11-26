@@ -25,12 +25,18 @@ app.get('/', (req, res) => {
     });
 
     const imageData = images.map(file => {
+      let new_img = 0;
+      if (file.indexOf('_new') > 0) {
+        file = file.replace('_new', '')
+        new_img = 1
+      }
+        
       const statusFilePath = path.join(imagesDir, `${file}.txt`);
       let status = '';
       if (fs.existsSync(statusFilePath)) {
           status = fs.readFileSync(statusFilePath, 'utf8').trim();
       }
-      return { name: file, status };
+      return { name: file, status,  new_img};
   });
 
     res.render('index', { images: imageData });

@@ -37,6 +37,8 @@
     .red { background-color: red; color: white; }
     .blue { background-color: blue; color: white; }
     .green { background-color: green; color: white; }
+    .display1 {visibility: inherit; color:red;}
+    .display0 {visibility: hidden;}
 </style>
   <script>
     function setImageName(name, value) {
@@ -67,10 +69,17 @@
   <h1>Image Gallery</h1>
   <a href="/t" target="_blank">Go to Page B</a>
   <div id="image-container">
-    <% images.forEach(function(image) { %>
+    <% images.forEach(function(image) { 
+        let image_name = image.name;
+        if (image.new_img == 1) {
+          image_name = image.name.replace('.png', '_new.png')
+        }
+      
+      %>
       <div class="image-item">
-        <img src="/images/<%= image.name %>" alt="<%= image.name %>">
+        <img src="/images/<%= image_name %>" alt="<%= image_name %>">
         <div class="buttons">
+          <label class="display<%=image.new_img%>">新</label>
           <label class="label1">当前选择状态：  '<label class="<%=image.name%>_label2"><%=image.status%></label>'</label>
           <button class="green" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
           <button class="blue" onclick="setImageName('<%= image.name %>', '待定')">待定</button>

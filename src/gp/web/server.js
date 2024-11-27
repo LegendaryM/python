@@ -43,6 +43,38 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/show_new', (req, res) => {
+  fs.readdir(imagesDir, (err, files) => {
+    if (err) {
+      return res.status(500).send('Unable to scan directory: ' + err);
+    }
+    // Filter out non-image files
+    const images = files.filter(file => {
+      const ext = path.extname(file).toLowerCase();
+      return ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif';
+    }).filter(file => {
+      return file.indexOf('_new') > 0;
+    });
+
+    const imageData = images.map(file => {
+      let new_img = 0;
+      if (file.indexOf('_new') > 0) {
+        file = file.replace('_new', '')
+        new_img = 1
+      }
+        
+      const statusFilePath = path.join(imagesDir, `${file}.txt`);
+      let status = '';
+      if (fs.existsSync(statusFilePath)) {
+          status = fs.readFileSync(statusFilePath, 'utf8').trim();
+      }
+      return { name: file, status,  new_img};
+  });
+
+    res.render('index', { images: imageData });
+  });
+});
+
 function readFilesFromDirectory() {
   const filesData = [];
   const files = fs.readdirSync(imagesDir).filter(file => path.extname(file) === '.txt');

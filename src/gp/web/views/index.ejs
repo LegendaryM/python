@@ -39,6 +39,26 @@
     .green { background-color: green; color: white; }
     .display1 {visibility: inherit; color:red;}
     .display0 {visibility: hidden;}
+
+
+    .button-link {
+      display: inline-block; /* 使链接像块级元素一样显示 */
+      padding: 10px 20px; /* 内边距 */
+      font-size: 16px; /* 字体大小 */
+      color: #fff; /* 文字颜色 */
+      background-color: #007BFF; /* 背景颜色 */
+      border: none; /* 无边框 */
+      border-radius: 5px; /* 圆角 */
+      text-align: center; /* 文本居中 */
+      text-decoration: none; /* 去掉下划线 */
+      cursor: pointer; /* 鼠标悬停时显示指针 */
+      transition: background-color 0.3s ease; /* 背景颜色过渡效果 */
+    }
+
+    /* 鼠标悬停时的样式 */
+    .button-link:hover {
+      background-color: #0056b3; /* 改变背景颜色 */
+    }
 </style>
   <script>
     function setImageName(name, value) {
@@ -63,11 +83,27 @@
 
       document.getElementsByClassName(name +'_label2')[0].textContent = value
     }
+
+    function show_new() {
+      fetch('/show_new', {
+        method: 'GET',
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
+        // body: JSON.stringify({ imageName: name, value:value })
+      })
+      .then(response => response.text())
+      .then(data => {
+          document.open();
+          document.write(data);
+          document.close();
+      });
+    }
   </script>
 </head>
 <body>
   <h1>Image Gallery</h1>
-  <a href="/t" target="_blank">Go to Page B</a>
+  <a href="/t" target="_blank" class="button-link">Go to Page B</a>  <a href="/show_new" target="_blank" class="button-link">show_new</a> 
   <div id="image-container">
     <% images.forEach(function(image) { 
         let image_name = image.name;

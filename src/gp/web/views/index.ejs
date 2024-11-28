@@ -62,12 +62,16 @@
 </style>
   <script>
     function setImageName(name, value) {
+      const today = new Date()
+      const date_f = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' 
+      +  String(today.getDate()).padStart(2, '0') + ' ' + String(today.getHours()).padStart(2, '0');
+      const date_value = value + '(' + date_f + ')'
       fetch('/select-image', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ imageName: name, value:value })
+        body: JSON.stringify({ imageName: name, value:date_value })
       })
       .then(response => {
         response.text()
@@ -81,7 +85,7 @@
         console.error('Error:', error);
       });
 
-      document.getElementsByClassName(name +'_label2')[0].textContent = value
+      document.getElementsByClassName(name +'_label2')[0].textContent = date_value
     }
 
     function show_new() {

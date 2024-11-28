@@ -45,8 +45,10 @@ def download_upload(upload=False):
             os.rename(os.path.join(img_path,f),os.path.join(img_path,new_f))
 
 
+    counts = {}
     for tag, codes in all_codes.items():
         length = len(codes)
+        counts[tag] = length
         for i in range(length):
             code = codes[i]
             png_file = os.path.join(img_path, code + '_new.png')
@@ -68,6 +70,8 @@ def download_upload(upload=False):
         for f in os.listdir(img_path):
             upload_to_obs(os.path.join(img_path, f), r'vpp/1batchSynth/test/k/' + f)
         print('Upload to obs success.')
+    else:
+        print('All png download success :%s.' % counts)
 
 
 def clean():

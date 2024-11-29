@@ -51,6 +51,24 @@ def http_get_req_origin(url, timeout=60, headers=None):
     """
     return requests.get(url, timeout=timeout, headers=headers)
 
+def http_get_req_origin_retry(url, timeout=60, headers=None, retry=3):
+    print('get req:', url)
+    """
+    http协议的post请求
+    :param params:
+    :param timeout:
+    :param url:
+    :param json_param: json参数
+    :return:
+    """
+    for i in range(retry):
+        resp = requests.get(url, timeout=timeout, headers=headers)
+        if resp.status_code != 200:
+            print(url, 'get failed in ', i)
+            time.sleep(1)
+        else:
+            return resp
+
 def get_current_time(show_type='ms'):
     """
     获取当前时间

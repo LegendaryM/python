@@ -30,7 +30,7 @@ import time
 import json
 
 from gp.gp_code import all_codes, husheng_zhuban
-from util.my_utils import http_get_req_origin, write_str, remove_fd
+from util.my_utils import http_get_req_origin, write_str, remove_fd, http_get_req_origin_retry
 from util.obs_client import upload_to_obs
 
 k_url_base = 'https://webquoteklinepic.eastmoney.com/GetPic.aspx'
@@ -56,16 +56,14 @@ def download_hangye(del_before=True, hangye_details=True):
         code = diff['f12']
         tag = diff['f13']
         png_file = os.path.join(img_path, code + '_%s.png' % i)
-        resp = http_get_req_origin(
+        resp = http_get_req_origin_retry(
             '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (k_url_base, tag, code, time.time()))
-        if resp.status_code != 200:
-            print("[%s %s/%s] %s get failed" % (tag, i + 1, length, code))
 
         with open(png_file, 'wb') as f:
             f.write(resp.content)
         print("[%s %s/%s] %s get success: %s" % (tag, i + 1, length, code, png_file))
     print('All hangye download end.')
-
+    all_count = 0
     if hangye_details:
         print('Start to get hangye details...')
         for i in range(length):
@@ -87,22 +85,22 @@ def download_hangye(del_before=True, hangye_details=True):
             print('[%s] -> origin diff:%s, filter diff:%s' % (code, len(diffs_detail), len(new_diffs_detail)))
 
             length_detail = len(new_diffs_detail)
+            all_count += length_detail
             for i_detail in range(length_detail):
                 diff_detail = new_diffs_detail[i_detail]
                 code_detail = diff_detail['f12']
                 tag_detail = diff_detail['f13']
                 png_file = os.path.join(detail_file, code_detail + '_%s.png' % i_detail)
-                resp_detail = http_get_req_origin(
+                resp_detail = http_get_req_origin_retry(
                     '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
                     k_url_base, tag_detail, code_detail, time.time()))
-                if resp_detail.status_code != 200:
-                    print("[%s] -> [%s %s/%s] %s get failed" % (code, tag_detail, i_detail + 1, length_detail, code_detail))
 
                 with open(png_file, 'wb') as f:
                     f.write(resp_detail.content)
                 print("[%s] -> [%s %s/%s] %s get success: %s" % (code, tag_detail, i_detail + 1, length_detail, code_detail, png_file))
             print('[%s] -> All detail download end.' % code)
 
+        print('hangye count:%s, details: %s' % (length, all_count))
 
 
 

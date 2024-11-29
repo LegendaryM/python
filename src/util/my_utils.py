@@ -109,6 +109,14 @@ def write_list(datas, file, mode='w'):
     print("写入txt成功")
 
 
+def write_str(file, str, mode='w'):
+    print('开始写入字符串文本到文件:%s...' % file)
+    with open(file, mode) as f:
+        f.write(str)
+        f.flush()
+    print('写入字符串文本成功.')
+
+
 def read_list(file, mode='r'):
     # 写文件
     with open(file, mode) as f:
@@ -121,6 +129,19 @@ def read_list(file, mode='r'):
     return results
 
 
+def remove_fd(file, root_del=False):
+    if os.path.isfile(file):
+        os.remove(file)
+        print('%s remove success' % file)
+        return
+
+    for f in os.listdir(file):
+        remove_fd(os.path.join(file,f), root_del=True)
+
+    if root_del:
+        os.removedirs(file)
+        print('%s remove success' % file)
+
+
 if __name__ == '__main__':
-    import random
-    print(random.random)
+    remove_fd(r'E:\1gp\png',root_del=False)

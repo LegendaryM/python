@@ -24,7 +24,15 @@ app.get('/', (req, res) => {
       return ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif';
     });
 
-    const imageData = images.map(file => {
+    const images_sort = images.sort((a,b) => {
+      // 提取文件名中的数字部分
+      const numA = parseInt(a.replace('.png','').split('_')[1], 10);
+      const numB = parseInt(b.replace('.png','').split('_')[1], 10);
+
+      return numA - numB;
+    })
+
+    const imageData = images_sort.map(file => {
       let new_img = 0;
       if (file.indexOf('_new') > 0) {
         file = file.replace('_new', '')

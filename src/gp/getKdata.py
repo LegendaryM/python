@@ -60,7 +60,7 @@ def download_hangye(hangye_gegu_count_max=50, descend_count=10):
         diff = diffs[i]
         code = diff['f12']
         tag = diff['f13']
-        png_file = os.path.join(img_path, code + '_%s.png' % i)
+        png_file = os.path.join(img_path, code + '.png')
         resp = http_get_req_origin_retry(
             '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (k_url_base, tag, code, time.time()))
 
@@ -106,7 +106,7 @@ def download_hangye(hangye_gegu_count_max=50, descend_count=10):
             diff_detail = new_diffs_detail[i_detail]
             code_detail = diff_detail['f12']
             tag_detail = diff_detail['f13']
-            png_file = os.path.join(detail_file, code_detail + '_%s.png' % i_detail)
+            png_file = os.path.join(detail_file, code_detail + '.png')
             resp_detail = http_get_req_origin_retry(
                 '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
                 k_url_base, tag_detail, code_detail, time.time()))

@@ -85,7 +85,7 @@ app.get('/t', (req, res) => {
       f62 = (f62 / 10000).toFixed(2) + '万';
     } else {
     }
-    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + f62, code:f12, status};
+    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + ph_detail.f3 + "%_" + f62, code:f12, status};
   })
 
   res.render('index1', { images: ph_details_all, name,code });

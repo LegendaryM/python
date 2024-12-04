@@ -14,114 +14,83 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  fs.readdir(imagesDir, (err, files) => {
-    if (err) {
-      return res.status(500).send('Unable to scan directory: ' + err);
+  const paihang = fs.readFileSync(path.join(imagesDir, `paihang.txt`), 'utf8').trim();
+  const ph_details = JSON.parse(paihang);
+
+  const ph_details_all = ph_details.map(ph_detail => {
+    const f12 = ph_detail.f12
+    const statusFile = path.join(imagesDir, `${f12}.txt`);
+    let status = '';
+    if (fs.existsSync(statusFile)) {
+        status = fs.readFileSync(statusFile, 'utf8').trim();
     }
-    // Filter out non-image files
-    const images = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif';
-    });
 
-    const images_sort = images.sort((a,b) => {
-      // 提取文件名中的数字部分
-      const numA = parseInt(a.replace('.png','').split('_')[1], 10);
-      const numB = parseInt(b.replace('.png','').split('_')[1], 10);
-
-      return numA - numB;
-    })
-
-    const imageData = images_sort.map(file => {
-      let new_img = 0;
-      if (file.indexOf('_new') > 0) {
-        file = file.replace('_new', '')
-        new_img = 1
-      }
-        
-      const statusFilePath = path.join(imagesDir, `${file}.txt`);
-      let status = '';
-      if (fs.existsSync(statusFilePath)) {
-          status = fs.readFileSync(statusFilePath, 'utf8').trim();
-      }
-      return { name: file, status,  new_img};
-  });
-
-    res.render('index', { images: imageData });
-  });
-});
-
-app.get('/show_new', (req, res) => {
-  fs.readdir(imagesDir, (err, files) => {
-    if (err) {
-      return res.status(500).send('Unable to scan directory: ' + err);
+    let f62 = ph_detail.f62;
+    if (f62 >= 100000000) { // 1亿
+      f62 = (f62 / 100000000).toFixed(2) + '亿';
+    } else if (f62 >= 10000) {
+      f62 = (f62 / 10000).toFixed(2) + '万';
+    }  else if (f62 <= -100000000) {
+      f62 = (f62 / 100000000).toFixed(2) + '亿';
+    } else if (f62 <= -10000) {
+      f62 = (f62 / 10000).toFixed(2) + '万';
+    } else {
     }
-    // Filter out non-image files
-    const images = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif';
-    }).filter(file => {
-      return file.indexOf('_new') > 0;
-    });
+    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + f62, code:f12, status};
+  })
 
-    const imageData = images.map(file => {
-      let new_img = 0;
-      if (file.indexOf('_new') > 0) {
-        file = file.replace('_new', '')
-        new_img = 1
-      }
-        
-      const statusFilePath = path.join(imagesDir, `${file}.txt`);
-      let status = '';
-      if (fs.existsSync(statusFilePath)) {
-          status = fs.readFileSync(statusFilePath, 'utf8').trim();
-      }
-      return { name: file, status,  new_img};
-  });
-
-    res.render('index', { images: imageData });
-  });
+  res.render('index', { images: ph_details_all });
 });
 
-function readFilesFromDirectory() {
-  const filesData = [];
-  const files = fs.readdirSync(imagesDir).filter(file => path.extname(file) === '.txt');
-
-  files.forEach(file => {
-    const content = fs.readFileSync(path.join(imagesDir, file), 'utf8');
-    const fileNameWithoutExtension = path.basename(file, '.txt');
-    filesData.push({ name: fileNameWithoutExtension, content: content });
-  });
-
-  return filesData;
-}
-
-app.get('/t', (req, res) => {
-  const filesData = readFilesFromDirectory();
-  res.render('index1', { filesData, 'searchTerm':'' });
-});
-
-app.post('/search', (req, res) => {
-  const searchTerm = req.body.searchTerm;
-  const filesData = readFilesFromDirectory();
-  const filteredData = filesData.filter(file => file.content.includes(searchTerm) );
-  // const filteredData = filesData.map(file => ({
-  //   name: file.name,
-  //   content: file.content.includes(searchTerm) ? file.content : ''
-  // }));
-  res.render('index1', { filesData: filteredData, searchTerm });
-});
-
-app.post('/select-image', (req, res) => {
-  const selectedImage = req.body.imageName;
+app.post('/setStatus', (req, res) => {
+  const parent = req.body.parent;
+  const code = req.body.code;
   const value = req.body.value;
-  fs.writeFile(path.join(imagesDir, selectedImage + '.txt'), value , (err) => {
+  let final_path = path.join(imagesDir, code + '.txt')
+  if (parent != '') {
+    final_path = path.join(imagesDir, parent + "_details", code + '.txt')
+  }
+  fs.writeFile(final_path, value , (err) => {
     if (err) {
       return res.status(500).send('Unable to write file: ' + err);
     }
     res.send('Image name written to file successfully');
   });
 });
+
+app.get('/t', (req, res) => {
+  const code = req.query.code;
+
+  const paihang = fs.readFileSync(path.join(imagesDir, code + '_details', `paihang.txt`), 'utf8').trim();
+  const splits = paihang.split('\n')
+  const name = splits[0]
+  const ph_details = JSON.parse(splits[1]);
+
+  const ph_details_all = ph_details.map(ph_detail => {
+    const f12 = ph_detail.f12
+    const statusFile = path.join(imagesDir, code + '_details', `${f12}.txt`);
+    let status = '';
+    if (fs.existsSync(statusFile)) {
+        status = fs.readFileSync(statusFile, 'utf8').trim();
+    }
+
+    let f62 = ph_detail.f62;
+    if (f62 >= 100000000) { // 1亿
+      f62 = (f62 / 100000000).toFixed(2) + '亿';
+    } else if (f62 >= 10000) {
+      f62 = (f62 / 10000).toFixed(2) + '万';
+    }  else if (f62 <= -100000000) {
+      f62 = (f62 / 100000000).toFixed(2) + '亿';
+    } else if (f62 <= -10000) {
+      f62 = (f62 / 10000).toFixed(2) + '万';
+    } else {
+    }
+    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + f62, code:f12, status};
+  })
+
+  res.render('index1', { images: ph_details_all, name,code });
+});
+
 
 app.use('/images', express.static(imagesDir));
 
@@ -140,7 +109,6 @@ for (const interfaceName in networkInterfaces) {
         }
     }
 }
-
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

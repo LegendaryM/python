@@ -51,7 +51,7 @@ def http_get_req_origin(url, timeout=60, headers=None):
     """
     return requests.get(url, timeout=timeout, headers=headers)
 
-def http_get_req_origin_retry(url, timeout=60, headers=None, retry=3):
+def http_get_req_origin_retry(url, timeout=60, headers=None, retry=3,sleep=3):
     print('get req:', url)
     """
     http协议的post请求
@@ -65,7 +65,7 @@ def http_get_req_origin_retry(url, timeout=60, headers=None, retry=3):
         resp = requests.get(url, timeout=timeout, headers=headers)
         if resp.status_code != 200:
             print(url, 'get failed in ', i)
-            time.sleep(1)
+            time.sleep(sleep)
         else:
             return resp
 
@@ -117,19 +117,19 @@ def download_file(url, local_file):
     print(url, 'download success')
 
 
-def write_list(datas, file, mode='w'):
+def write_list(datas, file, mode='w', encoding='utf-8'):
     print("开始写入txt中...")
     # 写文件
-    with open(file, mode) as f:
+    with open(file, mode, encoding=encoding) as f:
         for data in datas:
             f.write(data + '\n')
         f.flush()
     print("写入txt成功")
 
 
-def write_str(file, str, mode='w'):
+def write_str(file, str, mode='w', encoding='utf-8'):
     print('开始写入字符串文本到文件:%s...' % file)
-    with open(file, mode) as f:
+    with open(file, mode, encoding=encoding) as f:
         f.write(str)
         f.flush()
     print('写入字符串文本成功.')

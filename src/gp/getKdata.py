@@ -42,13 +42,18 @@ if not os.path.exists(img_path):
 
 
 
-def download_hangye(del_before=True, hangye_details=True):
+
+def download_hangye(hangye_gegu_count_max=50, descend_count=10):
+    """
+    :param hangye_gegu_count_max: 行业个股的下载的最大图片数
+    :param descend_count: 当天下跌的下跌数据
+    """
     remove_fd(img_path, root_del=False)
 
     # 行业按照资金流排行
     resp = http_get_req_origin(r'https://push2.eastmoney.com/api/qt/clist/get?pn=1&pz=500&po=1&np=1&fields=f12%2Cf13%2Cf14%2Cf62&fid=f62&fs=m%3A90%2Bt%3A2')
     diffs = json.loads(resp.content)['data']['diff']
-    write_str(os.path.join(img_path, 'paihang.txt'), '行业板块排行榜\n' + json.dumps(diffs))
+    write_str(os.path.join(img_path, 'paihang.txt'), json.dumps(diffs))
 
     length = len(diffs)
     for i in range(length):
@@ -62,43 +67,55 @@ def download_hangye(del_before=True, hangye_details=True):
         with open(png_file, 'wb') as f:
             f.write(resp.content)
         print("[%s %s/%s] %s get success: %s" % (tag, i + 1, length, code, png_file))
+        time.sleep(0.2)
     print('All hangye download end.')
     all_count = 0
-    if hangye_details:
-        print('Start to get hangye details...')
-        for i in range(length):
-            diff = diffs[i]
-            code = diff['f12']
-            name = diff['f14']
-            detail_file = os.path.join(img_path, code + "_details")
-            os.makedirs(detail_file, exist_ok=True)
-            # 获取前50个
-            resp = http_get_req_origin(r'https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3A' + code + '&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf13')
-            diffs_detail = json.loads(resp.content)['data']['diff']
-            # 过滤掉非沪深主板的数据
-            new_diffs_detail = []
-            for diff_ in diffs_detail:
-                if diff_['f12'] in husheng_zhuban:
+
+    print('Start to get hangye details...')
+    for i in range(length):
+        diff = diffs[i]
+        code = diff['f12']
+        name = diff['f14']
+        detail_file = os.path.join(img_path, code + "_details")
+        os.makedirs(detail_file, exist_ok=True)
+        # 获取前50个
+        resp = http_get_req_origin(r'https://push2.eastmoney.com/api/qt/clist/get?fid=f3&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3A' + code + '&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf13%2Cf3')
+        diffs_detail = json.loads(resp.content)['data']['diff']
+        # 过滤掉非沪深主板的数据
+        new_diffs_detail = []
+        for diff_ in diffs_detail:
+            if diff_['f12'] in husheng_zhuban:  # 选择当日上涨并且主力净流入大于0的
+                if isinstance(diff_['f3'], str):
+                    continue
+                if diff_['f3'] > 0:
+                    new_diffs_detail.append(diff_)
+                    continue
+
+                if diff_['f62'] > 0:
                     new_diffs_detail.append(diff_)
 
-            write_str(os.path.join(detail_file, 'paihang.txt'), name + ' 行业排行榜\n' + json.dumps(new_diffs_detail))
-            print('[%s] -> origin diff:%s, filter diff:%s' % (code, len(diffs_detail), len(new_diffs_detail)))
+            if len(new_diffs_detail) >= hangye_gegu_count_max: # 超过个股选择数量时，跳过
+                break
 
-            length_detail = len(new_diffs_detail)
-            all_count += length_detail
-            for i_detail in range(length_detail):
-                diff_detail = new_diffs_detail[i_detail]
-                code_detail = diff_detail['f12']
-                tag_detail = diff_detail['f13']
-                png_file = os.path.join(detail_file, code_detail + '_%s.png' % i_detail)
-                resp_detail = http_get_req_origin_retry(
-                    '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
-                    k_url_base, tag_detail, code_detail, time.time()))
+        write_str(os.path.join(detail_file, 'paihang.txt'), name + '\n' + json.dumps(new_diffs_detail))
+        print('[%s] -> origin diff:%s, filter diff:%s' % (code, len(diffs_detail), len(new_diffs_detail)))
 
-                with open(png_file, 'wb') as f:
-                    f.write(resp_detail.content)
-                print("[%s] -> [%s %s/%s] %s get success: %s" % (code, tag_detail, i_detail + 1, length_detail, code_detail, png_file))
-            print('[%s] -> All detail download end.' % code)
+        length_detail = len(new_diffs_detail)
+        all_count += length_detail
+        for i_detail in range(length_detail):
+            diff_detail = new_diffs_detail[i_detail]
+            code_detail = diff_detail['f12']
+            tag_detail = diff_detail['f13']
+            png_file = os.path.join(detail_file, code_detail + '_%s.png' % i_detail)
+            resp_detail = http_get_req_origin_retry(
+                '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
+                k_url_base, tag_detail, code_detail, time.time()))
+
+            with open(png_file, 'wb') as f:
+                f.write(resp_detail.content)
+            print("[%s %s/%s] -> [%s %s/%s] %s get success: %s" % (code, i,length, tag_detail, i_detail + 1, length_detail, code_detail, png_file))
+            time.sleep(0.2)
+        print('[%s] -> All detail download end.' % code)
 
         print('hangye count:%s, details: %s' % (length, all_count))
 
@@ -150,4 +167,4 @@ def clean():
 
 
 if __name__ == '__main__':
-    download_hangye(False)
+    download_hangye()

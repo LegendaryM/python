@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Gallery</title>
+
   <style>
     .image-container {
         display: flex;
@@ -61,31 +62,29 @@
     }
 </style>
   <script>
-    function setImageName(name, value) {
+    function setStatus(code, value) {
       const today = new Date()
       const date_f = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' 
       +  String(today.getDate()).padStart(2, '0') + ' ' + String(today.getHours()).padStart(2, '0');
       const date_value = value + '(' + date_f + ')'
-      fetch('/select-image', {
+      fetch('/setStatus', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ imageName: name, value:date_value })
+        body: JSON.stringify({ code: code, value:date_value,parent:'' })
       })
       .then(response => {
         response.text()
         
     })
       .then(data => {
-        // console.log(data);
-        
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
-      document.getElementsByClassName(name +'_label2')[0].textContent = date_value
+      document.getElementsByClassName(code +'_label2')[0].textContent = date_value
     }
 
     function show_new() {
@@ -107,23 +106,18 @@
 </head>
 <body>
   <h1>Image Gallery</h1>
-  <a href="/t" target="_blank" class="button-link">Go to Page B</a> 
   <div id="image-container">
-    <% images.forEach(function(image) { 
-        let image_name = image.name;
-        if (image.new_img == 1) {
-          image_name = image.name.replace('.png', '_new.png')
-        }
-      
-      %>
+    <h3>行业排行榜</h3>
+    <% images.forEach(function(image) { %>
       <div class="image-item">
-        <img src="/images/<%= image_name %>" alt="<%= image_name %>">
+        <img src="/images/<%= image.code %>.png" alt="<%= image.code %>">
         <div class="buttons">
-          <label class="display<%=image.new_img%>">新</label>
-          <label class="label1">当前选择状态：  '<label class="<%=image.name%>_label2"><%=image.status%></label>'</label>
-          <button class="green" onclick="setImageName('<%= image.name %>', '下降')">下降</button>
-          <button class="blue" onclick="setImageName('<%= image.name %>', '待定')">待定</button>
-          <button class="red" onclick="setImageName('<%= image.name %>', '上升')">上升</button>
+          <label class="label1"><%=image.name%></label>
+          <label class="label1">当前选择状态：  '<label class="<%=image.code%>_label2"><%=image.status%></label>'</label>
+          <button class="green" onclick="setStatus('<%= image.code %>', '下降')">下降</button>
+          <button class="blue" onclick="setStatus('<%= image.code %>', '待定')">待定</button>
+          <button class="red" onclick="setStatus('<%= image.code %>', '上升')">上升</button>
+          <a href="/t?code=<%=image.code%>" target="_blank" class="button-link">个股</a> 
         </div>
       </div>
       

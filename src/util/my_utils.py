@@ -62,12 +62,17 @@ def http_get_req_origin_retry(url, timeout=60, headers=None, retry=3,sleep=3):
     :return:
     """
     for i in range(retry):
-        resp = requests.get(url, timeout=timeout, headers=headers)
-        if resp.status_code != 200:
+        try:
+            resp = requests.get(url, timeout=timeout, headers=headers)
+            if resp.status_code != 200:
+                print(url, 'get failed in ', i)
+                time.sleep(sleep)
+            else:
+                return resp
+        except:
             print(url, 'get failed in ', i)
             time.sleep(sleep)
-        else:
-            return resp
+    raise Exception('url: %s get failed' % url)
 
 def get_current_time(show_type='ms'):
     """

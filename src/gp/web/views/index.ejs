@@ -147,9 +147,9 @@
           subImagesHtml += `<label class="label1" style="display: block;">${name}</label>`;
           subImagesHtml += `<label class="label1" style="display: block;">${image.name}</label>`;
           subImagesHtml += `<label class="label1" style="display: block;">当前选择状态：  '<label id="${image.code}_label2">${image.status}</label>'</label>`;
-          subImagesHtml += `<button class="green" onclick="setStatus('${code}','${image.code}', 'a')">a</button>`;  // 下降
-          subImagesHtml += `<button class="blue" onclick="setStatus('${code}','${image.code}', 'b')">b</button>`; // 待定
-          subImagesHtml += `<button class="red" onclick="setStatus('${code}','${image.code}', 'c')">c</button>`;  // 上升
+          subImagesHtml += `<button class="green" onclick="setStatus('${code}','${image.code}', '下降')">下降</button>`;  // 下降
+          subImagesHtml += `<button class="blue" onclick="setStatus('${code}','${image.code}', '待定')">待定</button>`; // 待定
+          subImagesHtml += `<button class="red" onclick="setStatus('${code}','${image.code}', '上升')">上升</button>`;  // 上升
           subImagesHtml += `</div>`
           subImagesHtml += `</div>`
           
@@ -188,9 +188,9 @@
         <div class="content">
           <label class="label1" style="display: block;"><%=image.name%></label>
           <label class="label1"  style="display: block;">当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label>
-          <button class="green" onclick="setStatus('','<%= image.code %>', 'a')">a</button>
-          <button class="blue" onclick="setStatus('','<%= image.code %>', 'b')">b</button>
-          <button class="red" onclick="setStatus('','<%= image.code %>', 'c')">c</button>
+          <button class="green" onclick="setStatus('','<%= image.code %>', '下降')">下降</button>
+          <button class="blue" onclick="setStatus('','<%= image.code %>', '待定')">待定</button>
+          <button class="red" onclick="setStatus('','<%= image.code %>', '上升')">上升</button>
           <button class="gray" onclick="loadSubImages('<%= image.code %>')">展开</button>
         </div>
         <div class="sub-images" id="sub-images-<%= image.code %>"></div>

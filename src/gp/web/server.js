@@ -62,6 +62,7 @@ app.get('/t', (req, res) => {
   const code = req.query.code;
   if (!fs.existsSync(path.join(imagesDir, code + '_details', `paihang.txt`))) {
     res.send({ images: [], name: '', code })
+    return;
   }
   const paihang = fs.readFileSync(path.join(imagesDir, code + '_details', `paihang.txt`), 'utf8').trim();
 

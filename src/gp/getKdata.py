@@ -58,7 +58,7 @@ def resize_png(img_path):
     quantized_image.save(r'E:\temp\1\3.png', format='PNG')
 
 
-def download_hangye(hangye_gegu_count_max=50, descend_count=10):
+def download_hangye(hangye_gegu_count_max=30, descend_count=10):
     """
     :param hangye_gegu_count_max: 行业个股的下载的最大图片数
     :param descend_count: 当天下跌的下跌数据

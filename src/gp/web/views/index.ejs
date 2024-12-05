@@ -29,6 +29,9 @@
     .display1 {visibility: inherit; color:red;}
     .display0 {visibility: hidden;}
 
+    label.red {color: red; background-color: transparent}
+    label.green {color: green; ; background-color: transparent}
+
     .sub-images {
       display: none;
       z-index: 1;
@@ -63,7 +66,7 @@
     /* 对于移动设备，默认设置为100%宽度 */
     @media (max-width: 768px) {
         .child-containers {
-            width: 90%;
+            width: 99%;
         }
     }
 
@@ -140,12 +143,13 @@
         if (images.length == 0) {
           subImagesHtml += `<label class="label1" style="display: block;">没有数据</label>`;
         } else {
+          subImagesHtml += `<label class="label1" style="display: block;">总数量:${images.length}</label>`;
           images.forEach(image => {
           subImagesHtml += `<div class="child-item">`;
           subImagesHtml += `<img src="/images/${code}_details/${image.code}.png" alt="${image.code}">`;
           subImagesHtml += `<div class="content">`;
           subImagesHtml += `<label class="label1" style="display: block;">${name}</label>`;
-          subImagesHtml += `<label class="label1" style="display: block;">${image.name}</label>`;
+          subImagesHtml += `<label class="label1 ${image.color}" style="display: block;">${image.name}</label>`;
           subImagesHtml += `<label class="label1" style="display: block;">当前选择状态：  '<label id="${image.code}_label2">${image.status}</label>'</label>`;
           subImagesHtml += `<button class="green" onclick="setStatus('${code}','${image.code}', '下降')">下降</button>`;  // 下降
           subImagesHtml += `<button class="blue" onclick="setStatus('${code}','${image.code}', '待定')">待定</button>`; // 待定
@@ -186,7 +190,7 @@
       <div class="image-item">
         <img src="/images/<%= image.code %>.png" alt="<%= image.code %>">
         <div class="content">
-          <label class="label1" style="display: block;"><%=image.name%></label>
+          <label class="label1 <%=image.color%>" style="display: block;"><%=image.name%></label>
           <label class="label1"  style="display: block;">当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label>
           <button class="green" onclick="setStatus('','<%= image.code %>', '下降')">下降</button>
           <button class="blue" onclick="setStatus('','<%= image.code %>', '待定')">待定</button>

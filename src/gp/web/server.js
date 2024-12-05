@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
         status = fs.readFileSync(statusFile, 'utf8').trim();
     }
 
+    let color = 'red'
     let f62 = ph_detail.f62;
     if (f62 >= 100000000) { // 1亿
       f62 = (f62 / 100000000).toFixed(2) + '亿';
@@ -32,11 +33,13 @@ app.get('/', (req, res) => {
       f62 = (f62 / 10000).toFixed(2) + '万';
     }  else if (f62 <= -100000000) {
       f62 = (f62 / 100000000).toFixed(2) + '亿';
+      color = 'green'
     } else if (f62 <= -10000) {
       f62 = (f62 / 10000).toFixed(2) + '万';
+      color = 'green'
     } else {
     }
-    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + f62, code:f12, status};
+    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + f62, code:f12, status,color:color};
   })
 
   res.render('index', { images: ph_details_all });
@@ -78,6 +81,7 @@ app.get('/t', (req, res) => {
         status = fs.readFileSync(statusFile, 'utf8').trim();
     }
 
+    let color = 'red'
     let f62 = ph_detail.f62;
     if (f62 >= 100000000) { // 1亿
       f62 = (f62 / 100000000).toFixed(2) + '亿';
@@ -85,11 +89,13 @@ app.get('/t', (req, res) => {
       f62 = (f62 / 10000).toFixed(2) + '万';
     }  else if (f62 <= -100000000) {
       f62 = (f62 / 100000000).toFixed(2) + '亿';
+      color = 'green'
     } else if (f62 <= -10000) {
       f62 = (f62 / 10000).toFixed(2) + '万';
+      color = 'green'
     } else {
     }
-    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + ph_detail.f3 + "%_" + f62, code:f12, status};
+    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + ph_detail.f3 + "%_" + f62, code:f12, status, color:color};
   })
 
   res.send({ images: ph_details_all, name,code })

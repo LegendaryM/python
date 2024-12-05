@@ -60,8 +60,11 @@ app.post('/setStatus', (req, res) => {
 
 app.get('/t', (req, res) => {
   const code = req.query.code;
-
+  if (!fs.existsSync(path.join(imagesDir, code + '_details', `paihang.txt`))) {
+    res.send({ images: [], name: '', code })
+  }
   const paihang = fs.readFileSync(path.join(imagesDir, code + '_details', `paihang.txt`), 'utf8').trim();
+
   const splits = paihang.split('\n')
   const name = splits[0]
   const ph_details = JSON.parse(splits[1]);
@@ -88,7 +91,7 @@ app.get('/t', (req, res) => {
     return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + ph_detail.f3 + "%_" + f62, code:f12, status};
   })
 
-  res.render('index1', { images: ph_details_all, name,code });
+  res.send({ images: ph_details_all, name,code })
 });
 
 

@@ -40,7 +40,22 @@ img_path = r'E:\1gp\png'
 if not os.path.exists(img_path):
     os.makedirs(img_path, exist_ok=True)
 
+def resize_png(img_path):
+    import cv2
+    from PIL import Image
+    cv_image = cv2.imread(img_path)
 
+    new_img = cv2.resize(cv_image, (round(cv_image.shape[1] * 1.1), round(cv_image.shape[0] * 1.1)))
+    cv_image_rgb = cv2.cvtColor(new_img, cv2.COLOR_BGR2RGB)
+
+    # 将 NumPy 数组转换为 PIL 图像
+    pil_image = Image.fromarray(cv_image_rgb)
+
+    # 应用颜色量化，限制颜色数为 256，并转换为 'P' 模式（即 palette 模式）
+    quantized_image = pil_image.quantize(colors=256)
+
+    # 保存图像为 PNG 文件，保持调色板模式
+    quantized_image.save(r'E:\temp\1\3.png', format='PNG')
 
 
 def download_hangye(hangye_gegu_count_max=50, descend_count=10):

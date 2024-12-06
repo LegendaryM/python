@@ -12,15 +12,12 @@
     }
     .image-item {
       display: inline-block;
-      max-width: 650px;
+      max-width: 530px;
       border: 1px solid #ccc; /* Add default border */
     }
     .image-item img {
       transition: transform 0.5s ease;
     }
-    /* .image-item img:hover {
-      transform: scale(1.2);
-    } */
 
     .red { background-color: red; color: white; }
     .blue { background-color: blue; color: white; }
@@ -32,57 +29,23 @@
     label.red {color: red; background-color: transparent}
     label.green {color: green; ; background-color: transparent}
 
-    .sub-images {
+    .image-item-container {
       display: none;
-      z-index: 1;
-      position: fixed;
-      top: 0;
-      left: 0;
-      background-color: rgba(0, 0, 0, 0.7); 
-      height: 100%;
-      width: 100%;
-      overflow: auto;
-      backdrop-filter: blur(10px);
     }
 
-    .sub-images.show {
+    .image-item-container.show {
       display: block ;
-    }
-
-    .child-containers {
-      background-color: white;
-      /* padding: 20px; */
-      border-radius: 8px;
-      overflow-y: auto;
-      position:absolute;
-      top:0;
-      right:0;
-      width: 50%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* 对于移动设备，默认设置为100%宽度 */
-    @media (max-width: 768px) {
-        .child-containers {
-            width: 99%;
-        }
-    }
-
-    /* 对于桌面设备，设置为50%宽度 */
-    @media (min-width: 769px) {
-        .modal-content {
-            width: 50%;
-        }
+      border: 1px solid #2c3527; /* Add default border */
+      max-width: 528px;
     }
 
     .child-item {
       display: inline-block;
-      max-width: 650px;
+      max-width: 530px;
       border: 1px solid #ccc; /* Add default border */
-      margin-left: 10px;
+      margin-left: 3px;
     }
+
 
     .close {
       position: absolute;
@@ -92,6 +55,8 @@
       cursor: pointer;
       z-index:10;
     }
+
+    
 </style>
   <script>
     function setStatus(parent, code, value) {
@@ -116,60 +81,9 @@
         console.error('Error:', error);
       });
 
-      // if (parent == ''){
       document.getElementById(code +'_label2').textContent = date_value  
-      // } else {
-      //   document.getElementById(`sub-images-${parent}`).textContent = date_value
-      // }
     }
 
-    async function loadSubImages(code) {
-      const subImagesDiv = document.getElementById(`sub-images-${code}`);
-      if (subImagesDiv.innerHTML !== '') {
-          // 如果已经有内容，则直接展开
-          toggleSubImages(code);
-          return;
-      }
-
-      try {
-        const response = await fetch(`/t?code=${code}`);
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        const subImagesData = await response.json();
-        const name = subImagesData.name
-        const images = subImagesData.images
-        let subImagesHtml = `<span class="close" onclick="closeModal('${code}')">&times;</span>`;
-        subImagesHtml += `<div class="child-containers">`;
-        if (images.length == 0) {
-          subImagesHtml += `<label class="label1" style="display: block;">没有数据</label>`;
-        } else {
-          subImagesHtml += `<label class="label1" style="display: block;">总数量:${images.length}</label>`;
-          images.forEach(image => {
-          subImagesHtml += `<div class="child-item">`;
-          subImagesHtml += `<img src="/images/${code}_details/${image.code}.png" alt="${image.code}">`;
-          subImagesHtml += `<div class="content">`;
-          subImagesHtml += `<label class="label1" style="display: block;">${name}</label>`;
-          subImagesHtml += `<label class="label1 ${image.color}" style="display: block;">${image.name}</label>`;
-          subImagesHtml += `<label class="label1" style="display: block;">当前选择状态：  '<label id="${image.code}_label2">${image.status}</label>'</label>`;
-          subImagesHtml += `<button class="green" onclick="setStatus('${code}','${image.code}', '下降')">下降</button>`;  // 下降
-          subImagesHtml += `<button class="blue" onclick="setStatus('${code}','${image.code}', '待定')">待定</button>`; // 待定
-          subImagesHtml += `<button class="red" onclick="setStatus('${code}','${image.code}', '上升')">上升</button>`;  // 上升
-          subImagesHtml += `</div>`
-          subImagesHtml += `</div>`
-          
-          // subImagesHtml += `<img src="${subImage.url}" alt="Sub Image">`;
-        });
-        }
-        
-        subImagesHtml += `<div>`;
-        subImagesDiv.innerHTML = subImagesHtml;
-
-        // 加载完成后展开
-        toggleSubImages(code);
-      } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-      }
-    }
 
     function toggleSubImages(code) {
         const subImagesDiv = document.getElementById(`sub-images-${code}`);
@@ -180,24 +94,44 @@
       document.getElementById(`sub-images-${code}`).classList.toggle('show');
     }
 
+    function show_hangye(code) {
+      document.getElementById(`${code}-item-container`).classList.toggle('show');
+    }
+
   </script>
 </head>
 <body>
   <h1>Image Gallery</h1>
   <div class="image-container">
-    <!-- <h3>行业排行榜</h3> -->
     <% images.forEach(function(image) { %>
       <div class="image-item">
-        <img src="/images/<%= image.code %>.png" alt="<%= image.code %>">
-        <div class="content">
-          <label class="label1 <%=image.color%>" style="display: block;"><%=image.name%></label>
-          <label class="label1"  style="display: block;">当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label>
-          <button class="green" onclick="setStatus('','<%= image.code %>', '下降')">下降</button>
-          <button class="blue" onclick="setStatus('','<%= image.code %>', '待定')">待定</button>
-          <button class="red" onclick="setStatus('','<%= image.code %>', '上升')">上升</button>
-          <button class="gray" onclick="loadSubImages('<%= image.code %>')">展开</button>
+        <label class="label1 <%=image.color%>" style="display:inline-block;width: 300px;"><%=image.name%></label>
+        <label class="label1" style="display:inline-block;width: 100px;">总数量:<%=image.gegus_length%></label>
+        <button class="gray" onclick="show_hangye('<%= image.code %>')">显示</button>
+        <div class="image-item-container" id="<%=image.code%>-item-container">
+          <img src="/images/<%= image.code %>.png" alt="<%= image.code %>"> <br />
+          <label class="label1 <%=image.color%>" ><%=image.name%></label> <br />
+          <label class="label1" >当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label> <br />
+          <button class="green" onclick="setStatus('','<%= image.code %>', 'a')">a</button>  <!--下降 --> 
+          <button class="blue" onclick="setStatus('','<%= image.code %>', 'b')">b</button> <!--下降 --> 
+          <button class="red" onclick="setStatus('','<%= image.code %>', 'c')">c</button>  <!--下降 --> 
         </div>
-        <div class="sub-images" id="sub-images-<%= image.code %>"></div>
+
+        <div class="sub-images" id="sub-images-<%= image.code %>">
+          <% image.gegus.forEach(function(child) { %>
+            <div class="child-item">
+              <img src="/images/<%=image.code%>_details/<%=child.code%>.png" alt="${child.code}">
+              <div class="content">
+                <label class="label1" ><%=image.name%></label> <br />
+                <label class="label1 <%=child.color%>" ><%=child.name%></label> <br />
+                <label class="label1">当前选择状态：  '<label id="<%=child.code%>_label2"><%=child.status%></label>'</label> <br />
+                <button class="green" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'a')">a</button>
+                <button class="blue" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'b')">b</button>
+                <button class="red" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'c')">c</button>
+              </div>
+            </div>
+          <% }) %>
+        </div>
       </div>
     <% }) %>
   </div>

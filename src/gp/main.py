@@ -8,7 +8,7 @@
 @time: 2024/10/17 15:19
 """
 
-from gp.getKdata import clean, download_upload, download_hangye
+from gp.getKdata import clean, download_hangye
 from gp.send_email import send
 
 
@@ -17,8 +17,6 @@ def main(cmd):
         clean()
     else:
         download_hangye()
-        # download_upload(False)
-        # send()
 
 if __name__ == '__main__':
     main('')

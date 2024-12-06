@@ -8,6 +8,7 @@
 @time: 2024/10/16 10:41
 
 依赖： pip install opencv-contrib-python
+     pip install pillow
 
 说明： 从东方财富网拉数据，暂时不知道并发，做为财经网，并发应该很高
 当天：
@@ -31,7 +32,6 @@ import json
 
 from gp.gp_code import all_codes, husheng_zhuban
 from util.my_utils import http_get_req_origin, write_str, remove_fd, http_get_req_origin_retry
-from util.obs_client import upload_to_obs
 
 k_url_base = 'https://webquoteklinepic.eastmoney.com/GetPic.aspx'
 
@@ -39,6 +39,7 @@ img_path = r'E:\1gp\png'
 
 if not os.path.exists(img_path):
     os.makedirs(img_path, exist_ok=True)
+
 
 def resize_png(img_path):
     import cv2
@@ -55,10 +56,10 @@ def resize_png(img_path):
     quantized_image = pil_image.quantize(colors=256)
 
     # 保存图像为 PNG 文件，保持调色板模式
-    quantized_image.save(r'E:\temp\1\3.png', format='PNG')
+    quantized_image.save(img_path, format='PNG')
 
 
-def download_hangye(hangye_gegu_count_max=30, descend_count=10):
+def download_hangye(hangye_gegu_count_max=20, descend_count=10):
     """
     :param hangye_gegu_count_max: 行业个股的下载的最大图片数
     :param descend_count: 当天下跌的下跌数据
@@ -104,15 +105,10 @@ def download_hangye(hangye_gegu_count_max=30, descend_count=10):
                     continue
                 if diff_['f3'] > 0:
                     new_diffs_detail.append(diff_)
-                    continue
-
-                if diff_['f62'] > 0:
-                    new_diffs_detail.append(diff_)
-
             if len(new_diffs_detail) >= hangye_gegu_count_max: # 超过个股选择数量时，跳过
                 break
 
-        write_str(os.path.join(detail_file, 'paihang.txt'), name + '\n' + json.dumps(new_diffs_detail))
+        write_str(os.path.join(detail_file, 'paihang.txt'), json.dumps(new_diffs_detail))
         print('[%s] -> origin diff:%s, filter diff:%s' % (code, len(diffs_detail), len(new_diffs_detail)))
 
         length_detail = len(new_diffs_detail)
@@ -128,51 +124,12 @@ def download_hangye(hangye_gegu_count_max=30, descend_count=10):
 
             with open(png_file, 'wb') as f:
                 f.write(resp_detail.content)
+            resize_png(png_file)
             print("[%s %s/%s] -> [%s %s/%s] %s get success: %s" % (code, i,length, tag_detail, i_detail + 1, length_detail, code_detail, png_file))
             time.sleep(0.2)
         print('[%s] -> All detail download end.' % code)
 
         print('hangye count:%s, details: %s' % (length, all_count))
-
-
-
-
-
-def download_upload(upload=False):
-    for f in os.listdir(img_path):
-        if f.endswith('new.png'):
-            new_f = f.replace('_new','')
-            print('%s -> rename to: %s' % (f, new_f))
-            os.rename(os.path.join(img_path,f),os.path.join(img_path,new_f))
-
-
-    counts = {}
-    for tag, codes in all_codes.items():
-        length = len(codes)
-        counts[tag] = length
-        for i in range(length):
-            code = codes[i]
-            png_file = os.path.join(img_path, code + '_new.png')
-            if os.path.exists(os.path.join(img_path, code + '.png')):
-                os.remove(os.path.join(img_path, code + '.png'))
-                # continue
-            resp = http_get_req_origin(
-                '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
-                k_url_base, tag, code, time.time()))
-            if resp.status_code != 200:
-                print("[%s %s/%s] %s get failed" % (tag, i + 1, length, code))
-
-            with open(png_file, 'wb') as f:
-                f.write(resp.content)
-            print("[%s %s/%s] %s get success: %s" % (tag, i + 1, length, code, png_file))
-
-    if upload:
-        print('All download success, start upload to obs.')
-        for f in os.listdir(img_path):
-            upload_to_obs(os.path.join(img_path, f), r'vpp/1batchSynth/test/k/' + f)
-        print('Upload to obs success.')
-    else:
-        print('All png download success :%s.' % counts)
 
 
 def clean():

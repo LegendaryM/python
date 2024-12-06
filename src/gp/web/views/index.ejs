@@ -13,7 +13,14 @@
     .image-item {
       display: inline-block;
       min-width: 520px;
-      border: 1px solid #ccc; /* Add default border */
+      border: 2 solid green; /* Add default border */
+    }
+
+    .image-item:nth-child(even) {
+      display: inline-block;
+      min-width: 520px;
+      border: 2px solid red; /* Add default border */
+      background-color: #f5f7fa;
     }
     .image-item img {
       transition: transform 0.5s ease;

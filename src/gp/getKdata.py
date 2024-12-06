@@ -59,7 +59,7 @@ def resize_png(img_path):
     quantized_image.save(img_path, format='PNG')
 
 
-def download_hangye(hangye_gegu_count_max=20, descend_count=10):
+def download_hangye(hangye_gegu_count_max=20, price_min=3, price_max=30):
     """
     :param hangye_gegu_count_max: 行业个股的下载的最大图片数
     :param descend_count: 当天下跌的下跌数据
@@ -95,15 +95,15 @@ def download_hangye(hangye_gegu_count_max=20, descend_count=10):
         detail_file = os.path.join(img_path, code + "_details")
         os.makedirs(detail_file, exist_ok=True)
         # 获取前50个
-        resp = http_get_req_origin(r'https://push2.eastmoney.com/api/qt/clist/get?fid=f3&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3A' + code + '&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf13%2Cf3')
+        resp = http_get_req_origin(r'https://push2.eastmoney.com/api/qt/clist/get?fid=f3&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3A' + code + '&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf13%2Cf3%2Cf2')
         diffs_detail = json.loads(resp.content)['data']['diff']
         # 过滤掉非沪深主板的数据
         new_diffs_detail = []
         for diff_ in diffs_detail:
-            if diff_['f12'] in husheng_zhuban:  # 选择当日上涨并且主力净流入大于0的
+            if diff_['f12'] in husheng_zhuban:  # 选择当日上涨、主力净流入大于0、价格在区间内的
                 if isinstance(diff_['f3'], str):
                     continue
-                if diff_['f3'] > 0:
+                if diff_['f3'] > 0 and diff_['f2'] >= price_min and diff_['f2'] <= price_max:
                     new_diffs_detail.append(diff_)
             if len(new_diffs_detail) >= hangye_gegu_count_max: # 超过个股选择数量时，跳过
                 break

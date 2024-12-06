@@ -15,10 +15,11 @@ fid: 按照哪个字段排序, 默认是f62
 "f14": "软件开发",
 "f62": 5930019584
 ```
-2. 行业具体股份资金流排行： `https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3ABK0737&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf3`
+2. 行业具体股份资金流排行： `https://push2.eastmoney.com/api/qt/clist/get?fid=f62&po=1&pz=100&pn=1&np=1&fltt=2&invt=2&fs=b%3ABK0737&fields=f12%2Cf14%2Cf62%2Cf66%2Cf72%2Cf3%2Cf2`
 ```shell script
 fid: 按照哪个字段排序, 默认是f3
 
+"f2": 28.28         # 当天收盘价
 "f3": 1.1           # 当天涨幅 1.1%
 "f12": "002230",
 "f14": "科大讯飞",

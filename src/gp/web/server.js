@@ -27,8 +27,8 @@ app.get('/', (req, res) => {
 
     v = huansuan(hangye.f62)
     const f62 = v[0]
-    const color = v[1]
-    return { name: hangye.f14 + "_" + hangye.f12 + " -> " + f62, code:f12, status,color:color};
+    const color_zj = v[1]
+    return { name: hangye.f14 + "_" + hangye.f12 + " -> " + f62, code:f12, status,'color_zj':color_zj, 'color_zf':''};
   })
 
   const hangye_details_all = hangye_details.map(hangye => {
@@ -51,8 +51,13 @@ app.get('/', (req, res) => {
   
         v = huansuan(gegu.f62)
         const f62 = v[0]
-        const color = v[1]
-        return { name: gegu.f14 + "_" + gegu.f12 + " -> " + gegu.f3 + "%_" + f62, code:f12, status, color:color};
+        const color_zj = v[1] // 资金
+
+        let color_zf = 'red'  // 涨幅
+        if (gegu.f3 < 0) {
+          color_zf = 'green'
+        }
+        return { name: gegu.f14 + "_" + gegu.f12 + " -> ", 'f3':gegu.f3, 'f62':f62, code:f12, status, 'color_zj':color_zj, 'color_zf':color_zf};
       })
     }
     hangye['gegus'] = gegus

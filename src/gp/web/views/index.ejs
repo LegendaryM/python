@@ -12,13 +12,13 @@
     }
     .image-item {
       display: inline-block;
-      min-width: 575px;
+      min-width: 580px;
       border: 2 solid green; /* Add default border */
     }
 
     .image-item:nth-child(even) {
       display: inline-block;
-      min-width: 575px;
+      min-width: 580px;
       border: 2px solid red; /* Add default border */
       background-color: #f5f7fa;
     }
@@ -123,7 +123,7 @@
         <button class="gray" onclick="show_hangye('<%= image.code %>')">显示</button>
         <div class="image-item-container" id="<%=image.code%>-item-container">
           <img src="/images/<%= image.code %>.png" alt="<%= image.code %>"> <br />
-          <label class="label1 <%=image.color%>" ><%=image.name%></label> <br />
+          <label class="label1 <%=image.color_zj%>" ><%=image.name%></label> <br />
           <label class="label1" >当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label> <br />
           <button class="green" onclick="setStatus('','<%= image.code %>', 'D')">D</button>  <!--下降 --> 
           <button class="blue" onclick="setStatus('','<%= image.code %>', 'W')">W</button> <!--下降 --> 
@@ -136,7 +136,9 @@
               <img src="/images/<%=image.code%>_details/<%=child.code%>.png" alt="${child.code}">
               <div class="content">
                 <label class="label1" ><%=image.name%></label> <br />
-                <label class="label1 <%=child.color%>" ><%=child.name%></label> <br />
+                <label class="label1" ><%=child.name%></label>
+                <label class="label1 <%=child.color_zf%>" ><%=child.f3%>%</label>_ 
+                <label class="label1 <%=child.color_zj%>" ><%=child.f62%></label> <br />
                 <label class="label1">当前选择状态：  '<label id="<%=child.code%>_label2"><%=child.status%></label>'</label> <br />
                 <button class="green" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'D')">D</button>
                 <button class="blue" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'W')">W</button>

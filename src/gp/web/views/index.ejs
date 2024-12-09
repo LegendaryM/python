@@ -69,6 +69,11 @@
       z-index:10;
     }
 
+    .btn_1 {
+      width:50px;
+    }
+
+
     
 </style>
   <script>
@@ -125,9 +130,9 @@
           <img src="/images/<%= image.code %>.png" alt="<%= image.code %>"> <br />
           <label class="label1 <%=image.color_zj%>" ><%=image.name%></label> <br />
           <label class="label1" >当前选择状态：  '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label> <br />
-          <button class="green" onclick="setStatus('','<%= image.code %>', 'D')">D</button>  <!--下降 --> 
-          <button class="blue" onclick="setStatus('','<%= image.code %>', 'W')">W</button> <!--下降 --> 
-          <button class="red" onclick="setStatus('','<%= image.code %>', 'U')">U</button>  <!--下降 --> 
+          <button class="green btn_1" onclick="setStatus('','<%= image.code %>', 'D')">D</button>  <!--下降 --> 
+          <button class="blue btn_1" onclick="setStatus('','<%= image.code %>', 'W')">W</button> <!--下降 --> 
+          <button class="red btn_1" onclick="setStatus('','<%= image.code %>', 'U')">U</button>  <!--下降 --> 
         </div>
 
         <div class="sub-images" id="sub-images-<%= image.code %>">
@@ -140,9 +145,9 @@
                 <label class="label1 <%=child.color_zf%>" ><%=child.f3%>%</label>_ 
                 <label class="label1 <%=child.color_zj%>" ><%=child.f62%></label> <br />
                 <label class="label1">当前选择状态：  '<label id="<%=child.code%>_label2"><%=child.status%></label>'</label> <br />
-                <button class="green" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'D')">D</button>
-                <button class="blue" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'W')">W</button>
-                <button class="red" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'U')">U</button>
+                <button class="green btn_1" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'D')">D</button>
+                <button class="blue btn_1" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'W')">W</button>
+                <button class="red btn_1" onclick="setStatus('<%=image.code%>','<%= child.code %>', 'U')">U</button>
               </div>
             </div>
           <% }) %>

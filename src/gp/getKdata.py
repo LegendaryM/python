@@ -55,8 +55,10 @@ def resize_png(img_path):
     # 应用颜色量化，限制颜色数为 256，并转换为 'P' 模式（即 palette 模式）
     quantized_image = pil_image.quantize(colors=256)
 
+    new_img_path = img_path.replace('_origin','')
     # 保存图像为 PNG 文件，保持调色板模式
-    quantized_image.save(img_path, format='PNG')
+    quantized_image.save(new_img_path, format='PNG')
+    return new_img_path
 
 
 def download_hangye(hangye_gegu_count_max=20, price_min=3, price_max=30):
@@ -117,15 +119,17 @@ def download_hangye(hangye_gegu_count_max=20, price_min=3, price_max=30):
             diff_detail = new_diffs_detail[i_detail]
             code_detail = diff_detail['f12']
             tag_detail = diff_detail['f13']
-            png_file = os.path.join(detail_file, code_detail + '.png')
+            png_file = os.path.join(detail_file, code_detail + '.png_origin')
             resp_detail = http_get_req_origin_retry(
                 '%s?nid=%s.%s&type=&unitWidth=-6&ef=&formula=MACD&AT=1&imageType=KXL&timespan=%d' % (
                 k_url_base, tag_detail, code_detail, time.time()))
 
             with open(png_file, 'wb') as f:
                 f.write(resp_detail.content)
-            resize_png(png_file)
-            print("[%s %s/%s] -> [%s %s/%s] %s get success: %s" % (code, i,length, tag_detail, i_detail + 1, length_detail, code_detail, png_file))
+            new_png_file = resize_png(png_file)
+            os.remove(png_file)
+
+            print("[%s %s/%s] -> [%s %s/%s] %s get success: %s" % (code, i,length, tag_detail, i_detail + 1, length_detail, code_detail, new_png_file))
             time.sleep(0.2)
         print('[%s] -> All detail download end.' % code)
 

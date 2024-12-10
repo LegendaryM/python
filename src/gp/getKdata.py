@@ -61,7 +61,7 @@ def resize_png(img_path):
     return new_img_path
 
 
-def download_hangye(hangye_gegu_count_max=30, price_min=3, price_max=30, day_zhangfu_min=0.5):
+def download_hangye(hangye_gegu_count_max=20, price_min=3, price_max=30, day_zhangfu_min=1,day_zhangfu_max=9.3):
     """
     :param hangye_gegu_count_max: 行业个股的下载的最大图片数
     :param descend_count: 当天下跌的下跌数据
@@ -105,7 +105,7 @@ def download_hangye(hangye_gegu_count_max=30, price_min=3, price_max=30, day_zha
             if diff_['f12'] in husheng_zhuban:  # 选择当日上涨、主力净流入大于0、价格在区间内的
                 if isinstance(diff_['f3'], str):
                     continue
-                if diff_['f3'] > day_zhangfu_min and diff_['f2'] >= price_min and diff_['f2'] <= price_max:
+                if diff_['f3'] > day_zhangfu_min and diff_['f3'] <= day_zhangfu_max and diff_['f2'] >= price_min and diff_['f2'] <= price_max:
                     new_diffs_detail.append(diff_)
             if len(new_diffs_detail) >= hangye_gegu_count_max: # 超过个股选择数量时，跳过
                 break

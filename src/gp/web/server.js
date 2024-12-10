@@ -104,44 +104,56 @@ app.post('/setStatus', (req, res) => {
   });
 });
 
-app.get('/t', (req, res) => {
-  const code = req.query.code;
-  if (!fs.existsSync(path.join(imagesDir, code + '_details', `paihang.txt`))) {
-    res.send({ images: [], name: '', code })
-    return;
-  }
-  const paihang = fs.readFileSync(path.join(imagesDir, code + '_details', `paihang.txt`), 'utf8').trim();
+app.get('/show_summary', (req, res) => {
+  const hangye = fs.readFileSync(path.join(imagesDir, `paihang.txt`), 'utf8').trim();
+  const hangye_json = JSON.parse(hangye);
 
-  const splits = paihang.split('\n')
-  const name = splits[0]
-  const ph_details = JSON.parse(splits[1]);
-
-  const ph_details_all = ph_details.map(ph_detail => {
-    const f12 = ph_detail.f12
-    const statusFile = path.join(imagesDir, code + '_details', `${f12}.txt`);
+  const hangye_details = hangye_json.map(hangye => {
+    const f12 = hangye.f12
+    const statusFile = path.join(imagesDir, `${f12}.txt`);
     let status = '';
     if (fs.existsSync(statusFile)) {
         status = fs.readFileSync(statusFile, 'utf8').trim();
     }
 
-    let color = 'red'
-    let f62 = ph_detail.f62;
-    if (f62 >= 100000000) { // 1亿
-      f62 = (f62 / 100000000).toFixed(2) + '亿';
-    } else if (f62 >= 10000) {
-      f62 = (f62 / 10000).toFixed(2) + '万';
-    }  else if (f62 <= -100000000) {
-      f62 = (f62 / 100000000).toFixed(2) + '亿';
-      color = 'green'
-    } else if (f62 <= -10000) {
-      f62 = (f62 / 10000).toFixed(2) + '万';
-      color = 'green'
-    } else {
-    }
-    return { name: ph_detail.f14 + "_" + ph_detail.f12 + " -> " + ph_detail.f3 + "%_" + f62, code:f12, status, color:color};
+    v = huansuan(hangye.f62)
+    const f62 = v[0]
+    return { name: hangye.f14 + "_" + hangye.f12 + " -> " + f62, code:f12, status};
   })
 
-  res.send({ images: ph_details_all, name,code })
+  const hangye_details_all = hangye_details.map(hangye => {
+    gegus = []
+    const code = hangye.code;
+    paihang_txt = path.join(imagesDir, code + '_details', `paihang.txt`)
+    if (!fs.existsSync(paihang_txt)) {
+      gegus = []
+    } else {
+      const paihang = fs.readFileSync(paihang_txt, 'utf8').trim();
+      const gegu_details = JSON.parse(paihang);
+      
+      gegus = gegu_details.map(gegu => {
+        let has_remark=0
+        const f12 = gegu.f12
+        const statusFile = path.join(imagesDir, code + '_details', `${f12}.txt`);
+        let status = '';
+        if (fs.existsSync(statusFile)) {
+            status = fs.readFileSync(statusFile, 'utf8').trim();
+            has_remark = 1
+        }
+  
+        v = huansuan(gegu.f62)
+        const f62 = v[0]
+        const color_zj = v[1] // 资金
+
+        return { name: gegu.f14 + "_" + gegu.f12 + " -> ", 'f3':gegu.f3, 'f62':f62, code:f12, status, has_remark};
+      })
+    }
+    hangye['gegus'] = gegus
+    hangye['gegus_length'] = gegus.length
+    return hangye;
+  })
+    
+  res.render('index1', { images: hangye_details_all });
 });
 
 

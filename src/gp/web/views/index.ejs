@@ -10,6 +10,11 @@
       display: flex;
       flex-direction: column;
     }
+
+    .image-container.hidden {
+      display: none;
+    }
+
     .image-item {
       display: inline-block;
       min-width: 580px;
@@ -58,7 +63,6 @@
     .child-item:nth-child(even) {
       background-color: #c7c9c6;
     }
-
 
     .close {
       position: absolute;
@@ -116,11 +120,14 @@
       document.getElementById(`${code}-item-container`).classList.toggle('show');
     }
 
+    
   </script>
 </head>
 <body>
   <h1>Image Gallery</h1>
-  <div class="image-container">
+  <a href="/show_summary" target="_blank" class="button-link">Summary</a> 
+  
+  <div class="image-container" id="image-container">
     <% images.forEach(function(image) { %>
       <div class="image-item">
         <label class="label1 <%=image.color%>" style="display:inline-block;width: 300px;"><%=image.name%></label>

@@ -4,106 +4,118 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Gallery</title>
-
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <style>
-    .image-container {
-        display: flex;
-        flex-wrap: wrap;
+    .text-container {
+      display: flex;
+      flex-direction: column;
     }
-    .image-item {
-        display: flex;
-        align-items: center;
-        margin: 80px 0 80px 20px;
-        width: 90%;
-        border: 2px solid #ccc; /* Add default border */
-        padding: 10px; /* Add some padding for better spacing */
+
+    /* 对于移动设备，默认设置为100%宽度 */
+    @media (max-width: 768px) {
+        .text-containers {
+            width: 95%;
+        }
     }
-    .image-item img {
-        /* max-width: 200px; */
-        margin-right: 70px;
-        transform: scale(1.2);
-        /* box-sizing: border-box; */
+
+    /* 对于桌面设备，设置为50%宽度 */
+    @media (min-width: 769px) {
+        .text-content {
+            width: 100%;
+        }
     }
-    .buttons {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+
+    .text-item {
+      display: inline-block;
+      /* min-width: 580px; */
+      border: 2 solid green; /* Add default border */
     }
-    .buttons button {
-        margin: 5px 0;
-        padding: 10px 20px;
-        cursor: pointer;
+
+    .text-item:nth-child(even) {
+      display: inline-block;
+      /* min-width: 580px; */
+      /* border: 2px solid rgb(232 235 230);  */
+      background-color: #f5f7fa;
     }
+
     .red { background-color: red; color: white; }
     .blue { background-color: blue; color: white; }
     .green { background-color: green; color: white; }
+    .gray { background-color: gray; color: white; }
     .display1 {visibility: inherit; color:red;}
     .display0 {visibility: hidden;}
 
+    label.red {color: red; background-color: transparent}
+    label.green {color: green; ; background-color: transparent}
 
-    .button-link {
-      display: inline-block; /* 使链接像块级元素一样显示 */
-      padding: 10px 20px; /* 内边距 */
-      font-size: 16px; /* 字体大小 */
-      color: #fff; /* 文字颜色 */
-      background-color: #007BFF; /* 背景颜色 */
-      border: none; /* 无边框 */
-      border-radius: 5px; /* 圆角 */
-      text-align: center; /* 文本居中 */
-      text-decoration: none; /* 去掉下划线 */
-      cursor: pointer; /* 鼠标悬停时显示指针 */
-      transition: background-color 0.3s ease; /* 背景颜色过渡效果 */
+    .sub-text{
+      display: flex;
+      flex-wrap: wrap;
     }
 
-    /* 鼠标悬停时的样式 */
-    .button-link:hover {
-      background-color: #0056b3; /* 改变背景颜色 */
+    .child-item {
+      display: inline-block;
+      /* max-width: 530px; */
+      border: 1px solid #ccc; /* Add default border */
+      margin-left: 3px;
+      margin-bottom: 5px;
     }
+
+    .child-item:nth-child(even) {
+      background-color: #c7c9c6;
+    }
+
+    .child-item.hidden {
+      display: none;
+    }
+
+    
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 40px;
+      cursor: pointer;
+      z-index:10;
+    }
+
+    .btn_1 {
+      width:50px;
+    }
+    
 </style>
   <script>
-    function setStatus(parent, code, value) {
-      const today = new Date()
-      const date_f = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' 
-      +  String(today.getDate()).padStart(2, '0') + ' ' + String(today.getHours()).padStart(2, '0');
-      const date_value = value + '(' + date_f + ')'
-      fetch('/setStatus', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ parent:parent, code: code, value:date_value })
-      })
-      .then(response => {
-        response.text()
-        
-    })
-      .then(data => {
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-
-      document.getElementsByClassName(code +'_label2')[0].textContent = date_value
+    function show_remark(code) {
+      eles = document.getElementsByClassName('remark_0');
+      for (var i = 0; i < eles.length; i++) {
+        eles[i].classList.toggle('hidden');
+      }
     }
-
   </script>
 </head>
 <body>
-  <div id="image-container">
+  <h1>Summary</h1>
+  <button onclick="show_remark()">show_remark</button>
+  <div class="text-container">
     <% images.forEach(function(image) { %>
-      <div class="image-item">
-        <img src="/images/<%=code%>_details/<%= image.code %>.png" alt="<%= image.code %>">
-        <div class="buttons">
-          <label class="label1"><%=name%></label>
-          <label class="label1"><%=image.name%></label>
-          <label class="label1">当前选择状态：  '<label class="<%=image.code%>_label2"><%=image.status%></label>'</label>
-          <button class="green" onclick="setStatus('<%= code %>','<%= image.code %>', '下降')">下降</button>
-          <button class="blue" onclick="setStatus('<%= code %>','<%= image.code %>', '待定')">待定</button>
-          <button class="red" onclick="setStatus('<%= code %>','<%= image.code %>', '上升')">上升</button>
+      <div class="text-item">
+        <label class="label1 <%=image.color%>" style="display:inline-block;width: 300px;"><%=image.name%></label>
+        <label class="label1" style="display:inline-block;width: 100px;">总数量:<%=image.gegus_length%></label> <br />
+        <label class="label1" >remark： '<label id="<%=image.code%>_label2"><%=image.status%></label>'</label>
+
+        <div class="sub-text" id="sub-text-<%= image.code %>">
+          <% image.gegus.forEach(function(child) { %>
+            <div class="child-item remark_<%=child.has_remark%>" >
+              <div class="content" style="display: inline-block;">
+                <label class="label1" ><%=child.name%></label>
+                <label class="label1 <%=child.color_zf%>" ><%=child.f3%>%</label>_ 
+                <label class="label1 <%=child.color_zj%>" ><%=child.f62%></label> <br />
+                <label class="label1">remark： '<label id="<%=child.code%>_label2"><%=child.status%></label>'</label> <br />
+              </div>
+            </div>
+          <% }) %>
         </div>
       </div>
-      
     <% }) %>
   </div>
 </body>

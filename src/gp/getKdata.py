@@ -61,7 +61,7 @@ def resize_png(img_path):
     return new_img_path
 
 
-def download_hangye(hangye_gegu_count_max=20, price_min=3, price_max=30, day_zhangfu_min=1):
+def download_hangye(hangye_gegu_count_max=30, price_min=3, price_max=30, day_zhangfu_min=0.5):
     """
     :param hangye_gegu_count_max: 行业个股的下载的最大图片数
     :param descend_count: 当天下跌的下跌数据
